@@ -1,5 +1,4 @@
 FROM maven:3-jdk-8-alpine
-LABEL maintainer="BaseX Team <basex-talk@mailman.uni-konstanz.de>"
 
 # Compile BaseX, install
 COPY . /usr/src/basex/
@@ -13,6 +12,9 @@ RUN apk update && apk add --no-cache git && \
     mkdir -p /srv/.m2 /srv/basex/data /srv/basex/repo /srv/basex/webapp && \
     cp -r /usr/src/basex/basex-api/src/main/webapp/WEB-INF /srv/basex/webapp && \
     chown -R basex /srv
+
+COPY ./basex-api/src/main/webapp/dba /srv/basex/webapp
+
 USER basex
 ENV MAVEN_CONFIG=/srv/.m2
 
@@ -20,7 +22,7 @@ ENV MAVEN_CONFIG=/srv/.m2
 # 8984/tcp: HTTP
 # 8985/tcp: HTTP stop
 EXPOSE 1984 8984 8985
-VOLUME ["/srv/basex/data", "/srv/basex/repo","/srv/basex/webapp"]
+VOLUME ["/srv/basex/data", "/srv/basex/repo"]
 WORKDIR /srv
 
 # Run BaseX HTTP server by default
